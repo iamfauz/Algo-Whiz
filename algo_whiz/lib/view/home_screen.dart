@@ -95,8 +95,7 @@ class DashBoardItem extends StatelessWidget {
                 SizedBox(height: 20.0),
                 new Center(
                   child: new Text(title,
-                      style:
-                          new TextStyle(fontSize: 18.0, color: Colors.black)),
+                      style:Theme.of(context).textTheme.title.copyWith(fontWeight: FontWeight.w600, fontSize: 19)),
                 )
               ],
             ),
@@ -117,8 +116,8 @@ class _BackgroundPatternState extends State<BackgroundPattern> {
 
   @override
   Widget build(BuildContext context) {
+    _numbers = [];
     // Generating randomized list
-    _sampleSize = MediaQuery.of(context).size.width / 2;
     for (int i = 0; i < _sampleSize; ++i) {
       _numbers.add(Random().nextInt(500));
     }
@@ -130,7 +129,7 @@ class _BackgroundPatternState extends State<BackgroundPattern> {
         counter++;
         return Container(
           child: CustomPaint(
-            painter: BarPainter(
+            painter: HomeScreenBarPainter(
                 index: counter,
                 value: num,
                 width: MediaQuery.of(context).size.width / _sampleSize),

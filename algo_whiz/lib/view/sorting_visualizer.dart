@@ -205,7 +205,7 @@ class _SortingVisualizerState extends State<SortingVisualizer> {
                     counter++;
                     return Container(
                       child: CustomPaint(
-                        painter: BarPainter(
+                        painter: SortingBarPainter(
                             index: counter,
                             value: num,
                             width: MediaQuery.of(context).size.width /
