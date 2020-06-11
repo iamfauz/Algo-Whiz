@@ -1,7 +1,7 @@
-import 'dart:async';
-import 'dart:math';
 
-import 'package:algo_whiz/view/sorting_visualizer.dart';
+
+import 'package:algo_whiz/utils/colors.dart';
+import 'package:algo_whiz/view/home_screen.dart';
 import 'package:flutter/material.dart';
 
 void main() => runApp(MyApp());
@@ -12,9 +12,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: primarySwatch,
       ),
-      home: SortingVisualizer(),
+      home: HomeScreen(),
     );
   }
 }
