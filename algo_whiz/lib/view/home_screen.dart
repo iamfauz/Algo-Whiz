@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:algo_whiz/paint/bar_painter.dart';
 import 'package:algo_whiz/utils/colors.dart';
+import 'package:algo_whiz/view/pathfinding_visualizer.dart';
 import 'package:algo_whiz/view/sorting_visualizer.dart';
 import 'package:flutter/material.dart';
 
@@ -41,7 +42,14 @@ class _HomeScreenState extends State<HomeScreen> {
                   DashBoardItem(
                     title: "Pathfinding",
                     icon: Icons.search,
-                    onPressed: () {},
+                    onPressed: () {
+
+                       Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => PathfindingVisualizer()),
+                      );
+                    },
                   ),
                   DashBoardItem(
                       title: "Runtimes",
@@ -72,7 +80,7 @@ class DashBoardItem extends StatelessWidget {
     return Card(
         shape: RoundedRectangleBorder(
           side: BorderSide(color: Colors.white70, width: 1),
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(15),
         ),
         elevation: 10,
         margin: new EdgeInsets.all(6.0),
