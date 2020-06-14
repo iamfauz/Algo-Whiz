@@ -7,14 +7,14 @@ import 'package:flutter/material.dart';
 const BUBBLE_SORT_KEY = "bubble";
 const INSERTION_SORT_KEY = "selection";
 
-class SortingVisualizer extends StatefulWidget {
-  SortingVisualizer({Key key}) : super(key: key);
+class SortingScaffold extends StatefulWidget {
+  SortingScaffold({Key key}) : super(key: key);
 
   @override
-  _SortingVisualizerState createState() => _SortingVisualizerState();
+  _SortingScaffoldState createState() => _SortingScaffoldState();
 }
 
-class _SortingVisualizerState extends State<SortingVisualizer> {
+class _SortingScaffoldState extends State<SortingScaffold> {
   List<int> _numbers = [];
   StreamController<List<int>> _streamController = StreamController();
   String _currentSortAlgo = INSERTION_SORT_KEY;

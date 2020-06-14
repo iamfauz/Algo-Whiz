@@ -1,9 +1,9 @@
 import 'dart:math';
 
 import 'package:algo_whiz/paint/bar_painter.dart';
+import 'package:algo_whiz/ui/sorting_scaffold.dart';
 import 'package:algo_whiz/utils/colors.dart';
-import 'package:algo_whiz/view/pathfinding_visualizer.dart';
-import 'package:algo_whiz/view/sorting_visualizer.dart';
+import 'package:algo_whiz/view/pathfinding_scaffold.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -35,7 +35,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => SortingVisualizer()),
+                            builder: (context) => SortingScaffold()),
                       );
                     },
                   ),
@@ -47,7 +47,7 @@ class _HomeScreenState extends State<HomeScreen> {
                        Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => PathfindingVisualizer()),
+                            builder: (context) => PathfindingScaffold()),
                       );
                     },
                   ),
