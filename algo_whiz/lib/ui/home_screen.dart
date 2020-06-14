@@ -3,8 +3,10 @@ import 'dart:math';
 import 'package:algo_whiz/paint/bar_painter.dart';
 import 'package:algo_whiz/ui/sorting_scaffold.dart';
 import 'package:algo_whiz/utils/colors.dart';
-import 'package:algo_whiz/view/pathfinding_scaffold.dart';
+import 'package:algo_whiz/ui/pathfinding_scaffold.dart';
+import 'package:algo_whiz/viewmodel/pathfinding_view_model.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -43,8 +45,16 @@ class _HomeScreenState extends State<HomeScreen> {
                     title: "Pathfinding",
                     icon: Icons.search,
                     onPressed: () {
+                      List nodes = Provider.of<PathFindingViewModel>(context,
+                              listen: false)
+                          .nodes;
 
-                       Navigator.push(
+                      if (nodes == null || nodes.isEmpty) {
+                        Provider.of<PathFindingViewModel>(context, listen: false)
+                            .initGraphNodes(context: context);
+                      }
+
+                      Navigator.push(
                         context,
                         MaterialPageRoute(
                             builder: (context) => PathfindingScaffold()),
@@ -85,7 +95,6 @@ class DashBoardItem extends StatelessWidget {
         elevation: 10,
         margin: new EdgeInsets.all(6.0),
         child: Container(
-         
           child: new InkWell(
             onTap: () => onPressed(),
             child: Column(
@@ -103,7 +112,10 @@ class DashBoardItem extends StatelessWidget {
                 SizedBox(height: 20.0),
                 new Center(
                   child: new Text(title,
-                      style:Theme.of(context).textTheme.title.copyWith(fontWeight: FontWeight.w600, fontSize: 19)),
+                      style: Theme.of(context)
+                          .textTheme
+                          .title
+                          .copyWith(fontWeight: FontWeight.w600, fontSize: 19)),
                 )
               ],
             ),

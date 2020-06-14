@@ -1,5 +1,8 @@
+import 'package:algo_whiz/model/node.dart';
 import 'package:algo_whiz/utils/colors.dart';
+import 'package:algo_whiz/viewmodel/pathfinding_view_model.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 const double nodeContainerWidth = 40;
 const double nodeContainerHeight = 40;
@@ -17,35 +20,30 @@ class _PathfindingScaffoldState extends State<PathfindingScaffold> {
         title: Text("PathFinding"),
         backgroundColor: primaryColor,
       ),
-      body: SafeArea(child: NodeGrid()),
+      body: SafeArea(
+          child: Consumer<PathFindingViewModel>(
+        builder:
+            (BuildContext context, PathFindingViewModel value, Widget child) =>
+                NodeGrid(model: value),
+      )),
     );
   }
-}
-
-List<Widget> generateNodeContainers(int noXAxisNodes, int noYAxisNodes) {
-  List<Widget> nodeContainers = [];
-  for (int x = 0; x < noXAxisNodes; x++) {
-    for (int y = 0; y < noYAxisNodes; y++) {
-      Node node = Node(x: x, y:y);
-      nodeContainers.add(NodeContainer(node: node,));
-    }
-  }
-  return nodeContainers;
 }
 
 /// The UI container that holds a node
 class NodeContainer extends StatelessWidget {
   const NodeContainer({
-    Key key, this.node,
+    Key key,
+    this.node,
   }) : super(key: key);
-  
+
   final Node node;
   @override
   Widget build(BuildContext context) {
     return AnimatedContainer(
         duration: Duration(milliseconds: 100),
         child: Container(
-          child: Text("${node.x.toString()},${node.y.toString()}"),
+            child: Text("${node.x.toString()},${node.y.toString()}"),
             height: nodeContainerHeight,
             width: nodeContainerWidth,
             decoration: BoxDecoration(
@@ -56,6 +54,10 @@ class NodeContainer extends StatelessWidget {
 
 /// Widget that cotains all NodeContainera aligned in the form of Grid
 class NodeGrid extends StatefulWidget {
+  final PathFindingViewModel model;
+
+  const NodeGrid({Key key, this.model}) : super(key: key);
+
   @override
   _NodeGridState createState() => _NodeGridState();
 }
@@ -63,32 +65,14 @@ class NodeGrid extends StatefulWidget {
 class _NodeGridState extends State<NodeGrid> {
   @override
   Widget build(BuildContext context) {
-    var screenWidth = MediaQuery.of(context).size.width;
-    var screenHeight = MediaQuery.of(context).size.height - kToolbarHeight;
-    var noYAxisNodes = screenWidth ~/ nodeContainerWidth;
-    var noXAxisNodes = screenHeight ~/ nodeContainerHeight;
-
     return Container(
       child: GridView.count(
-        crossAxisCount: noYAxisNodes,
+        crossAxisCount: widget.model.noYaxisNodes,
         physics: NeverScrollableScrollPhysics(),
-        children: generateNodeContainers(noXAxisNodes, noYAxisNodes),
+        children: <Widget>[
+          ...widget.model.nodes.map((node) => NodeContainer(node: node))
+        ],
       ),
     );
   }
-}
-
-class Node {
-  final int x;
-  final int y;
-  bool isVisitedNode;
-  bool belongsToPath;
-  bool isStartNode;
-  bool isEndNode;
-  
-  Node(
-      {@required this.x,
-      @required this.y,
-      isVisited = false,
-      belongsToPath = false});
 }
