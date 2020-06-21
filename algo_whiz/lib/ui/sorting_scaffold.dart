@@ -231,7 +231,7 @@ class _SortingScaffoldState extends State<SortingScaffold> {
                     child: Text("RESET"))),
             Expanded(
                 child: FlatButton(
-                    onPressed:  _changeSpeed,
+                    onPressed: _changeSpeed,
                     child: Text(
                       "${speed + 1}x",
                       style: TextStyle(fontSize: 20),
@@ -240,12 +240,9 @@ class _SortingScaffoldState extends State<SortingScaffold> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: isSorting ? null : _sort,
-        child: Icon(Icons.play_arrow),
-        backgroundColor: Color(0xFF3b3b98)
-        
-      ),
-     
+          onPressed: isSorting ? null : _sort,
+          child: Icon(Icons.play_arrow),
+          backgroundColor: Color(0xFF3b3b98)),
     );
   }
 }
