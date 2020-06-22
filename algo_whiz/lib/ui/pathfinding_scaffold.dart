@@ -60,12 +60,17 @@ class NodeContainer extends StatefulWidget {
 
 class _NodeContainerState extends State<NodeContainer> {
   BoxDecoration _getBoxDecoration(Node node) {
-    if (node.isVisited) {
+    if (node.status == NodeStatus.VISITED) {
       return BoxDecoration(
         color:  swatchColors[700],
         border: Border.all(color:swatchColors[500]),
       );
-    } else if (node.isTargetNode) {
+    } else if (node.status == NodeStatus.PATH) {
+      return BoxDecoration(
+        color: Colors.yellow,
+        border: Border.all(color: colorLightSteelBlue),
+      );
+    }  else if (node.isTargetNode) {
       return BoxDecoration(
         color: Colors.red,
         border: Border.all(color: colorLightSteelBlue),
@@ -73,11 +78,6 @@ class _NodeContainerState extends State<NodeContainer> {
     } else if (node.isStartNode) {
       return BoxDecoration(
         color: Colors.white,
-        border: Border.all(color: colorLightSteelBlue),
-      );
-    } else if (node.belongsToPath) {
-      return BoxDecoration(
-        color: Colors.yellow,
         border: Border.all(color: colorLightSteelBlue),
       );
     } else {
@@ -96,10 +96,8 @@ class _NodeContainerState extends State<NodeContainer> {
             decoration: _getBoxDecoration(node),
             duration: Duration(milliseconds: 500),
             child: Container(
-              child: Text("${node.x.toString()},${node.y.toString()}"),
               height: nodeContainerHeight,
               width: nodeContainerWidth,
-              // decoration: _getBoxDecoration(node),
             ));
       });
 }

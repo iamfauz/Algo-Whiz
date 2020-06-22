@@ -72,19 +72,47 @@ class PathFindingViewModel extends ChangeNotifier {
     queue.add(_startNode);
     while (queue.isNotEmpty) {
       Node currentNode = queue.removeFirst();
-      _nodes[currentNode.index].isVisited = true;
+      _setNodeStatus(currentNode, NodeStatus.VISITED);
       if (currentNode == targetNode) {
-        return;
+        break;
       }
       List neighbours = getNeighbours(currentNode);
       neighbours.forEach((node) {
         if (exploredNodes[node.index] == null || !exploredNodes[node.index]) {
+          _nodes[node.index].previousNode = currentNode;
           queue.add(node);
           exploredNodes[node.index] = true;
         }
       });
       await Future.delayed(Duration(milliseconds: 100));
       notifyListeners();
+    }
+
+    _animateShortestPath();
+  }
+
+  /// Find shortest path by tracing previous node and
+  /// animate the shortest path
+  _animateShortestPath() async {
+    List shortestPath = [];
+
+    //Finf shortest Path
+    Node node = _targetNode;
+    while (node != null) {
+      shortestPath.add(node);
+      node = node.previousNode;
+    }
+
+    shortestPath = List.from(shortestPath.reversed);
+
+    if (shortestPath.length > 1) {
+      //If shortest Path exists
+
+      for (Node node in shortestPath) {
+        _setNodeStatus(node, NodeStatus.PATH);
+        await Future.delayed(Duration(milliseconds: 200));
+        notifyListeners();
+      }
     }
   }
 
@@ -100,9 +128,12 @@ class PathFindingViewModel extends ChangeNotifier {
   /// Resets the statuses of all nodes
   void reset() {
     _nodes.forEach((node) {
-      node.isVisited = false;
-      node.belongsToPath = false;
+      node.status = NodeStatus.UNVISITED;
     });
     notifyListeners();
+  }
+
+  void _setNodeStatus(Node node, NodeStatus status) {
+    _nodes[node.index].status = status;
   }
 }
