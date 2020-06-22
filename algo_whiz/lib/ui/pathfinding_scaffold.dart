@@ -36,7 +36,7 @@ class _PathfindingScaffoldState extends State<PathfindingScaffold> {
                     )
                   ],
                 )),
-        backgroundColor: primaryColor,
+        backgroundColor: colorPurpleNavy,
       ),
       body: SafeArea(
         child: NodeGrid(),
@@ -62,13 +62,14 @@ class _NodeContainerState extends State<NodeContainer> {
   BoxDecoration _getBoxDecoration(Node node) {
     if (node.status == NodeStatus.VISITED) {
       return BoxDecoration(
-        color:  swatchColors[700],
-        border: Border.all(color:swatchColors[500]),
+        color:  colorPurpleNavy,
+        
+        border: Border.all(color: colorDarkJungleGreen),
       );
     } else if (node.status == NodeStatus.PATH) {
       return BoxDecoration(
-        color: Colors.yellow,
-        border: Border.all(color: colorLightSteelBlue),
+        color: colorElectricLime,
+        border: Border.all(color: colorOliveGreen)
       );
     }  else if (node.isTargetNode) {
       return BoxDecoration(
@@ -83,7 +84,7 @@ class _NodeContainerState extends State<NodeContainer> {
     } else {
       return BoxDecoration(
         color: Colors.white,
-        border: Border.all(color: swatchColors[100])
+        border: Border.all(color:colorPurpleNavy, width:0)
       );
     }
   }
