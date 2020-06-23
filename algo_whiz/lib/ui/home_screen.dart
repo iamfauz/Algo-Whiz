@@ -8,12 +8,7 @@ import 'package:algo_whiz/viewmodel/pathfinding_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class HomeScreen extends StatefulWidget {
-  @override
-  _HomeScreenState createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen> {
+class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -50,7 +45,8 @@ class _HomeScreenState extends State<HomeScreen> {
                           .nodes;
 
                       if (nodes == null || nodes.isEmpty) {
-                        Provider.of<PathFindingViewModel>(context, listen: false)
+                        Provider.of<PathFindingViewModel>(context,
+                                listen: false)
                             .initGraphNodes(context: context);
                       }
 

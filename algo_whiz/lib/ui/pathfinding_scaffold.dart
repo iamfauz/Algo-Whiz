@@ -7,12 +7,7 @@ import 'package:provider/provider.dart';
 const double nodeContainerWidth = 40;
 const double nodeContainerHeight = 40;
 
-class PathfindingScaffold extends StatefulWidget {
-  @override
-  _PathfindingScaffoldState createState() => _PathfindingScaffoldState();
-}
-
-class _PathfindingScaffoldState extends State<PathfindingScaffold> {
+class PathfindingScaffold extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -51,18 +46,13 @@ class _PathfindingScaffoldState extends State<PathfindingScaffold> {
 }
 
 /// The UI container that holds a node
-class NodeContainer extends StatefulWidget {
+class NodeContainer extends StatelessWidget {
   const NodeContainer({
     Key key,
     this.nodeIndex,
   }) : super(key: key);
-
   final int nodeIndex;
-  @override
-  _NodeContainerState createState() => _NodeContainerState();
-}
 
-class _NodeContainerState extends State<NodeContainer> {
   BoxDecoration _getBoxDecoration(Node node) {
     if (node.status == NodeStatus.VISITED) {
       return BoxDecoration(
@@ -97,7 +87,7 @@ class _NodeContainerState extends State<NodeContainer> {
       child: Icon(
         node.isStartNode ? Icons.local_airport : Icons.home,
         color: colorMiddleGrey,
-        size: isHover? 40 : 25,
+        size: isHover ? 40 : 25,
       ),
     );
   }
@@ -105,7 +95,7 @@ class _NodeContainerState extends State<NodeContainer> {
   @override
   Widget build(BuildContext context) => Consumer<PathFindingViewModel>(builder:
           (BuildContext context, PathFindingViewModel value, Widget child) {
-        Node node = value.nodes[widget.nodeIndex];
+        Node node = value.nodes[nodeIndex];
         return AnimatedContainer(
             decoration: _getBoxDecoration(node),
             duration: Duration(milliseconds: 500),
@@ -124,14 +114,8 @@ class _NodeContainerState extends State<NodeContainer> {
 }
 
 /// Widget that cotains all NodeContainera aligned in the form of Grid
-class NodeGrid extends StatefulWidget {
-  const NodeGrid({Key key}) : super(key: key);
-
+class NodeGrid extends StatelessWidget {
   @override
-  _NodeGridState createState() => _NodeGridState();
-}
-
-class _NodeGridState extends State<NodeGrid> {
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
