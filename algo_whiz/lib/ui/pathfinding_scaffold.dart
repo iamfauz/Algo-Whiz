@@ -28,10 +28,15 @@ class _PathfindingScaffoldState extends State<PathfindingScaffold> {
                       onPressed: () {
                         value.bfs();
                       },
-                    ), IconButton(
-                      icon: Icon(Icons.refresh),
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.refresh,
+                          color:
+                              value.isAlgoComplete ? Colors.white : Colors.red),
                       onPressed: () {
-                        value.reset();
+                        if (value.isAlgoComplete) {
+                          value.reset();
+                        }
                       },
                     )
                   ],
@@ -50,7 +55,6 @@ class NodeContainer extends StatefulWidget {
   const NodeContainer({
     Key key,
     this.nodeIndex,
-
   }) : super(key: key);
 
   final int nodeIndex;
@@ -62,31 +66,40 @@ class _NodeContainerState extends State<NodeContainer> {
   BoxDecoration _getBoxDecoration(Node node) {
     if (node.status == NodeStatus.VISITED) {
       return BoxDecoration(
-        color:  colorPurpleNavy,
-        
+        color: colorPurpleNavy,
         border: Border.all(color: colorDarkJungleGreen),
       );
     } else if (node.status == NodeStatus.PATH) {
       return BoxDecoration(
-        color: colorElectricLime,
-        border: Border.all(color: colorOliveGreen)
-      );
-    }  else if (node.isTargetNode) {
-      return BoxDecoration(
-        color: Colors.red,
-        border: Border.all(color: colorLightSteelBlue),
-      );
-    } else if (node.isStartNode) {
-      return BoxDecoration(
-        color: Colors.white,
-        border: Border.all(color: colorLightSteelBlue),
-      );
+          color: colorElectricLime, border: Border.all(color: colorOliveGreen));
     } else {
       return BoxDecoration(
-        color: Colors.white,
-        border: Border.all(color:colorPurpleNavy, width:0)
+          color: Colors.white,
+          border: Border.all(color: colorPurpleNavy, width: 0));
+    }
+  }
+
+  Widget _getNodeContainerChild(Node node) {
+    if (!node.isStartNode && !node.isTargetNode) {
+      return Container();
+    } else {
+      return Draggable(
+        child: _getNodeWidget(node, false),
+        feedback: _getNodeWidget(node, true),
+        childWhenDragging: Container(),
+        data: node,
       );
     }
+  }
+
+  Widget _getNodeWidget(Node node, bool isHover) {
+    return Center(
+      child: Icon(
+        node.isStartNode ? Icons.local_airport : Icons.home,
+        color: colorMiddleGrey,
+        size: isHover? 40 : 25,
+      ),
+    );
   }
 
   @override
@@ -96,10 +109,17 @@ class _NodeContainerState extends State<NodeContainer> {
         return AnimatedContainer(
             decoration: _getBoxDecoration(node),
             duration: Duration(milliseconds: 500),
-            child: Container(
-              height: nodeContainerHeight,
-              width: nodeContainerWidth,
-            ));
+            child: DragTarget(
+                builder: (context, List<Node> candidateData, rejectedData) =>
+                    Container(
+                      child: _getNodeContainerChild(node),
+                      height: nodeContainerHeight,
+                      width: nodeContainerWidth,
+                    ),
+                onWillAccept: (startNode) => true,
+                onAccept: (startNode) {
+                  value.setDraggableNode(startNode, node);
+                }));
       });
 }
 
@@ -123,10 +143,9 @@ class _NodeGridState extends State<NodeGrid> {
         children: <Widget>[
           ...Provider.of<PathFindingViewModel>(context, listen: false)
               .nodes
-              .map((node) => 
-                      NodeContainer(
-                        nodeIndex: node.index,
-                      ))
+              .map((node) => NodeContainer(
+                    nodeIndex: node.index,
+                  ))
         ],
       ),
     );

@@ -12,7 +12,7 @@ class PathFindingViewModel extends ChangeNotifier {
   /// List of nodes that belong to the graph
   List<Node> _nodes = [];
   List<List<Node>> _graph = [];
-  bool isAlgoComplete = false;
+  bool isAlgoComplete = true;
   int _noXAxisNodes;
   int _noYAxisNodes;
   Node _startNode;
@@ -67,6 +67,10 @@ class PathFindingViewModel extends ChangeNotifier {
 
   /// Breadth First Search Algorithm
   bfs() async {
+
+    isAlgoComplete = false;
+    notifyListeners();
+
     Queue<Node> queue = Queue();
     Map exploredNodes = {_startNode.index: true};
     queue.add(_startNode);
@@ -87,8 +91,10 @@ class PathFindingViewModel extends ChangeNotifier {
       await Future.delayed(Duration(milliseconds: 100));
       notifyListeners();
     }
+    await _animateShortestPath();
 
-    _animateShortestPath();
+    isAlgoComplete = true;
+    notifyListeners();
   }
 
   /// Find shortest path by tracing previous node and
@@ -124,6 +130,19 @@ class PathFindingViewModel extends ChangeNotifier {
           (((rootNode.x == node.x && (rootNode.y - node.y).abs() == 1) ||
               (rootNode.y == node.y && (rootNode.x - node.x).abs() == 1))))
       .toList();
+
+  void setDraggableNode(Node startNode, Node endNode) {
+    if (startNode.isStartNode) {
+      _nodes[startNode.index].isStartNode = false;
+      _nodes[endNode.index].isStartNode = true;
+      _startNode = endNode;
+    } else {
+      _nodes[startNode.index].isTargetNode = false;
+      _nodes[endNode.index].isTargetNode = true;
+      _targetNode = endNode;
+    }
+    notifyListeners();
+  }
 
   /// Resets the statuses of all nodes
   void reset() {
