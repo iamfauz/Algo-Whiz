@@ -67,6 +67,8 @@ class PathFindingViewModel extends ChangeNotifier {
 
   /// Breadth First Search Algorithm
   bfs() async {
+    
+    _clearShortestPath();
 
     isAlgoComplete = false;
     notifyListeners();
@@ -148,8 +150,15 @@ class PathFindingViewModel extends ChangeNotifier {
   void reset() {
     _nodes.forEach((node) {
       node.status = NodeStatus.UNVISITED;
+      node.previousNode = null;
     });
     notifyListeners();
+  }
+
+  void _clearShortestPath(){
+    _nodes.forEach((node) {
+      node.previousNode = null;
+    });
   }
 
   void _setNodeStatus(Node node, NodeStatus status) {
