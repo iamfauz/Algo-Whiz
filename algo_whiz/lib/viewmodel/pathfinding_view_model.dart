@@ -17,6 +17,9 @@ class PathFindingViewModel extends ChangeNotifier {
   int _noYAxisNodes;
   Node _startNode;
   Node _targetNode;
+  bool _isInstantMode = false; // instant mode does no animation 
+  bool _isClearGrid = true;
+  int animationSpeedinSeconds = 0;
 
   /// getters
   List<Node> get nodes => _nodes;
@@ -25,11 +28,23 @@ class PathFindingViewModel extends ChangeNotifier {
   int get noYaxisNodes => _noYAxisNodes;
   Node get startNode => _startNode;
   Node get targetNode => _targetNode;
+  bool get isInstantMode => _isInstantMode;
+  bool get isClearGrid => _isClearGrid;
 
   // setters
   set nodes(List<Node> newNodesList) {
     assert(newNodesList != null);
     _nodes = newNodesList;
+    notifyListeners();
+  }
+
+  set isInstantMode(bool isInstantMode){
+    _isInstantMode = isInstantMode;
+    notifyListeners();
+  }
+
+  set isClearGrid(bool isClearGrid){
+    _isClearGrid = isClearGrid;
     notifyListeners();
   }
 
@@ -67,8 +82,8 @@ class PathFindingViewModel extends ChangeNotifier {
 
   /// Breadth First Search Algorithm
   bfs() async {
-    
-    _clearShortestPath();
+
+    reset();
 
     isAlgoComplete = false;
     notifyListeners();
@@ -90,12 +105,13 @@ class PathFindingViewModel extends ChangeNotifier {
           exploredNodes[node.index] = true;
         }
       });
-      await Future.delayed(Duration(milliseconds: 100));
-      notifyListeners();
+      await Future.delayed(Duration(milliseconds: isInstantMode? 0 : 100));
+      if(!isInstantMode) notifyListeners();
     }
     await _animateShortestPath();
 
     isAlgoComplete = true;
+    _isClearGrid = false;
     notifyListeners();
   }
 
@@ -118,7 +134,7 @@ class PathFindingViewModel extends ChangeNotifier {
 
       for (Node node in shortestPath) {
         _setNodeStatus(node, NodeStatus.PATH);
-        await Future.delayed(Duration(milliseconds: 200));
+        await Future.delayed(Duration(milliseconds: isInstantMode? 0 : 100));
         notifyListeners();
       }
     }
@@ -138,7 +154,7 @@ class PathFindingViewModel extends ChangeNotifier {
       _nodes[startNode.index].isStartNode = false;
       _nodes[endNode.index].isStartNode = true;
       _startNode = endNode;
-    } else {
+    } else if(startNode.isTargetNode){
       _nodes[startNode.index].isTargetNode = false;
       _nodes[endNode.index].isTargetNode = true;
       _targetNode = endNode;

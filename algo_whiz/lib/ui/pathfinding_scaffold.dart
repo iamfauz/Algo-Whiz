@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:algo_whiz/model/node.dart';
 import 'package:algo_whiz/utils/colors.dart';
 import 'package:algo_whiz/viewmodel/pathfinding_view_model.dart';
@@ -21,6 +23,7 @@ class PathfindingScaffold extends StatelessWidget {
                     IconButton(
                       icon: Icon(Icons.play_arrow),
                       onPressed: () {
+                        value.isInstantMode = false;
                         value.bfs();
                       },
                     ),
@@ -30,6 +33,7 @@ class PathfindingScaffold extends StatelessWidget {
                               value.isAlgoComplete ? Colors.white : Colors.red),
                       onPressed: () {
                         if (value.isAlgoComplete) {
+                          value.isClearGrid = true;
                           value.reset();
                         }
                       },
@@ -46,12 +50,19 @@ class PathfindingScaffold extends StatelessWidget {
 }
 
 /// The UI container that holds a node
-class NodeContainer extends StatelessWidget {
-  const NodeContainer({
+class NodeContainer extends StatefulWidget {
+  NodeContainer({
     Key key,
     this.nodeIndex,
   }) : super(key: key);
   final int nodeIndex;
+
+  @override
+  _NodeContainerState createState() => _NodeContainerState();
+}
+
+class _NodeContainerState extends State<NodeContainer> {
+  Node previousCandidateNode;
 
   BoxDecoration _getBoxDecoration(Node node) {
     if (node.status == NodeStatus.VISITED) {
@@ -69,7 +80,7 @@ class NodeContainer extends StatelessWidget {
     }
   }
 
-  Widget _getNodeContainerChild(Node node) {
+  Widget _getNodeContainerChild(Node node, bool isAlgoComplete) {
     if (!node.isStartNode && !node.isTargetNode) {
       return Container();
     } else {
@@ -78,6 +89,7 @@ class NodeContainer extends StatelessWidget {
         feedback: _getNodeWidget(node, true),
         childWhenDragging: Container(),
         data: node,
+        maxSimultaneousDrags: isAlgoComplete ? 1 : 0,
       );
     }
   }
@@ -95,22 +107,61 @@ class NodeContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Consumer<PathFindingViewModel>(builder:
           (BuildContext context, PathFindingViewModel value, Widget child) {
-        Node node = value.nodes[nodeIndex];
+        Node node = value.nodes[widget.nodeIndex];
         return AnimatedContainer(
             decoration: _getBoxDecoration(node),
-            duration: Duration(milliseconds: 500),
+            duration: Duration(milliseconds: value.isInstantMode ? 0 : 500),
             child: DragTarget(
-                builder: (context, List<Node> candidateData, rejectedData) =>
-                    Container(
-                      child: _getNodeContainerChild(node),
-                      height: nodeContainerHeight,
-                      width: nodeContainerWidth,
-                    ),
+                builder: (context, List<Node> candidateData, rejectedData) {
+                  // Call back that's called after the NodeContainerChild is built.
+                  // This function runs the runs the algo in instant mode to display the
+                  // shortest path dynamically when user is hovering over the grid
+                  onChildBuildCallBack() {
+                    if (candidateData.isNotEmpty) {
+                      // Checks if icon is hovering
+                      Node candidateNode = candidateData[0];
+                      if (previousCandidateNode != candidateNode &&
+                          candidateNode != node &&
+                          !value.isClearGrid) {
+                        previousCandidateNode = candidateNode;
+                        value.isInstantMode = true;
+                        value.setDraggableNode(candidateNode, node);
+                        value.bfs();
+                      }
+                    }
+                  }
+
+                  return NodeContainerChild(
+                      child: _getNodeContainerChild(node, value.isAlgoComplete),
+                      onPostFrameCallBack: onChildBuildCallBack);
+                },
                 onWillAccept: (startNode) => true,
                 onAccept: (startNode) {
                   value.setDraggableNode(startNode, node);
+                  if (!value.isClearGrid) {
+                    // Running algorithm again as workaround as hover does'nt get recognozed by the system sometimes
+                    value.isInstantMode = true;
+                    value.bfs();
+                  }
                 }));
       });
+}
+
+class NodeContainerChild extends StatelessWidget {
+  final Widget child;
+  final Function onPostFrameCallBack;
+
+  const NodeContainerChild({Key key, this.onPostFrameCallBack, this.child})
+      : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    WidgetsBinding.instance.addPostFrameCallback((_) => onPostFrameCallBack());
+    return Container(
+      child: child,
+      height: nodeContainerHeight,
+      width: nodeContainerWidth,
+    );
+  }
 }
 
 /// Widget that cotains all NodeContainera aligned in the form of Grid
