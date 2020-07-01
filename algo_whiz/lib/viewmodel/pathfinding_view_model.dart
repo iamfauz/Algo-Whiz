@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 
 const double nodeContainerWidth = 40;
 const double nodeContainerHeight = 40;
+const int maxAnimationSpeedInMilliSec = 300;
 
 /// Viewmodel that contains all buisness logic for the Pathfindign Scaffold
 class PathFindingViewModel extends ChangeNotifier {
@@ -19,7 +20,8 @@ class PathFindingViewModel extends ChangeNotifier {
   Node _targetNode;
   bool _isInstantMode = false; // instant mode does no animation 
   bool _isClearGrid = true;
-  int animationSpeedinSeconds = 0;
+  int _animationSpeedInMilliSec = ( maxAnimationSpeedInMilliSec* 0.5).toInt();
+  double _animationSpeedFactor = 0.70; // percent of the baseAnimationSpeed applied
 
   /// getters
   List<Node> get nodes => _nodes;
@@ -30,6 +32,8 @@ class PathFindingViewModel extends ChangeNotifier {
   Node get targetNode => _targetNode;
   bool get isInstantMode => _isInstantMode;
   bool get isClearGrid => _isClearGrid;
+  int get animationInSeconds => _animationSpeedInMilliSec;
+  double get animationSpeedFactor => _animationSpeedFactor;
 
   // setters
   set nodes(List<Node> newNodesList) {
@@ -45,6 +49,18 @@ class PathFindingViewModel extends ChangeNotifier {
 
   set isClearGrid(bool isClearGrid){
     _isClearGrid = isClearGrid;
+    notifyListeners();
+  }
+
+  set animationSpeedFactor(double speedFactor){
+    _animationSpeedFactor = speedFactor;
+    notifyListeners();
+  }
+
+  
+   // Set animation in speed from speed Factor
+  void setAnimationSpeedinSeconds(double speedFactor){
+    _animationSpeedInMilliSec = ( maxAnimationSpeedInMilliSec * (1 - speedFactor)).toInt();
     notifyListeners();
   }
 
@@ -105,7 +121,7 @@ class PathFindingViewModel extends ChangeNotifier {
           exploredNodes[node.index] = true;
         }
       });
-      await Future.delayed(Duration(milliseconds: isInstantMode? 0 : 100));
+      await Future.delayed(getAnimationDuration());
       if(!isInstantMode) notifyListeners();
     }
     await _animateShortestPath();
@@ -134,7 +150,7 @@ class PathFindingViewModel extends ChangeNotifier {
 
       for (Node node in shortestPath) {
         _setNodeStatus(node, NodeStatus.PATH);
-        await Future.delayed(Duration(milliseconds: isInstantMode? 0 : 100));
+        await Future.delayed(getAnimationDuration());
         notifyListeners();
       }
     }
@@ -179,5 +195,9 @@ class PathFindingViewModel extends ChangeNotifier {
 
   void _setNodeStatus(Node node, NodeStatus status) {
     _nodes[node.index].status = status;
+  }
+
+  Duration getAnimationDuration({int offset = 0}){
+    return Duration(milliseconds: isInstantMode? 0 : _animationSpeedInMilliSec + offset);
   }
 }

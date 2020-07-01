@@ -37,6 +37,19 @@ class PathfindingScaffold extends StatelessWidget {
                           value.reset();
                         }
                       },
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.settings, color: Colors.white),
+                      onPressed: () {
+                        showModalBottomSheet(
+                            isScrollControlled: false,
+                            isDismissible: true,
+                            backgroundColor: Colors.white,
+                            context: context,
+                            builder: (context) =>
+                                PathFindingSettingsBottomSheetWidget(
+                                    model: value));
+                      },
                     )
                   ],
                 )),
@@ -46,6 +59,55 @@ class PathfindingScaffold extends StatelessWidget {
         child: NodeGrid(),
       ),
     );
+  }
+}
+
+class PathFindingSettingsBottomSheetWidget extends StatefulWidget {
+  final PathFindingViewModel model;
+
+  const PathFindingSettingsBottomSheetWidget({Key key, this.model})
+      : super(key: key);
+
+  @override
+  _PathFindingSettingsBottomSheetWidgetState createState() =>
+      _PathFindingSettingsBottomSheetWidgetState();
+}
+
+class _PathFindingSettingsBottomSheetWidgetState
+    extends State<PathFindingSettingsBottomSheetWidget> {
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<PathFindingViewModel>(
+        builder:
+            (BuildContext context, PathFindingViewModel value, Widget child) =>
+                Container(
+                    padding: EdgeInsets.fromLTRB(16, 16, 0, 0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Column(children: <Widget>[
+                          Text("Key"),
+                        ]),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 16),
+                          child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Text("Speed Control"),
+                                Slider(
+                                  value: value.animationSpeedFactor,
+                                  onChanged: (speed) {
+                                    value.animationSpeedFactor = speed;
+                                    value.setAnimationSpeedinSeconds(speed);
+                                  },
+                                  min: 0,
+                                  max: 1,
+                                  label: "${value.animationSpeedFactor}",
+                                ),
+                              ]),
+                        )
+                      ],
+                    )));
   }
 }
 
@@ -117,18 +179,18 @@ class _NodeContainerState extends State<NodeContainer> {
                   // This function runs the runs the algo in instant mode to display the
                   // shortest path dynamically when user is hovering over the grid
                   onChildBuildCallBack() {
-                    if (candidateData.isNotEmpty) {
-                      // Checks if icon is hovering
-                      Node candidateNode = candidateData[0];
-                      if (previousCandidateNode != candidateNode &&
-                          candidateNode != node &&
-                          !value.isClearGrid) {
-                        previousCandidateNode = candidateNode;
-                        value.isInstantMode = true;
-                        value.setDraggableNode(candidateNode, node);
-                        value.bfs();
-                      }
-                    }
+                    // if (candidateData.isNotEmpty) {
+                    //   // Checks if icon is hovering
+                    //   Node candidateNode = candidateData[0];
+                    //   if (previousCandidateNode != candidateNode &&
+                    //       candidateNode != node &&
+                    //       !value.isClearGrid) {
+                    //     previousCandidateNode = candidateNode;
+                    //     value.isInstantMode = true;
+                    //     value.setDraggableNode(candidateNode, node);
+                    //     value.bfs();
+                    //   }
+                    // }
                   }
 
                   return NodeContainerChild(
