@@ -21,7 +21,7 @@ class PathFindingViewModel extends ChangeNotifier {
   bool _isInstantMode = false; // instant mode does no animation 
   bool _isClearGrid = true;
   int _animationSpeedInMilliSec = ( maxAnimationSpeedInMilliSec* 0.5).toInt();
-  double _animationSpeedFactor = 0.70; // percent of the baseAnimationSpeed applied
+  double _animationSpeedFactor = 0.85; // percent of the baseAnimationSpeed applied
 
   /// getters
   List<Node> get nodes => _nodes;
