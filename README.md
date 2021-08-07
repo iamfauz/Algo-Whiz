@@ -2,6 +2,10 @@
 
 AlgoWhiz is an algorithm visualizer/learning tool developed in Flutter. Can be run cross-platform across Android/iOS/Web/Windows/Linux. The motivation of this side-project was to improve front-end/mobile dev skills and also get a deeper understanding of algorithms. 
 
+![homepage_frame_small](https://user-images.githubusercontent.com/20114242/128603279-46c56c07-fe4f-4813-b23a-2e7342f06eb8.png)
+
+
+
 ## Features
 - Visualize a wide selection of sorting and pathfinding algorithms like Bubble sort, Selection sort, Breadth First Search etc.
 - Speed controls to visualize algorithms in real-time.
