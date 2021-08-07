@@ -11,6 +11,8 @@ AlgoWhiz is an algorithm visualizer/learning tool developed in Flutter. Can be r
 ## Architecture
 The architecture used in the MVVM(Model-View-ViewModel) Architecture. The state management solution used to employ MVVM in flutter is the Provider + ChangeNotifier patttern. https://flutter.dev/docs/development/data-and-backend/state-mgmt/simple
 
+![mvvm_general-650x169](https://user-images.githubusercontent.com/20114242/128601590-e5e252f2-b3bd-41d8-b752-6743e1ec7873.png)
+
 
 
 
